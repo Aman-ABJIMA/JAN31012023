@@ -15,7 +15,7 @@ namespace WebApplication_Student.Repository
 
         public StudentRepository()
         {
-            ConnectionStrings = @"Server=.;Database=DAPPERDB;Integrated Security=SSPI;TrustServerCertificate=true;";
+            ConnectionStrings = @"";
         
         }
         public IDbConnection connection
