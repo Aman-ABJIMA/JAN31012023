@@ -9,6 +9,6 @@ namespace WebApplication_Student.Data
         {
         
         }
-        public DbSet<Student> Students { get; set; }
+        public DbSet<StudentID> Students { get; set; }
     }
 }

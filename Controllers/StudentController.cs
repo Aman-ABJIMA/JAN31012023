@@ -9,37 +9,35 @@ namespace WebApplication_Student.Controllers
     [ApiController]
     public class StudentController : ControllerBase
     {
-        private readonly StudentRepository _studentRepository;
+        private readonly IStudentRepository _studentRepository;
 
-        public StudentController()
+        public StudentController(IStudentRepository studentRepository)
         {
-            _studentRepository = new StudentRepository();
+            _studentRepository = studentRepository;
         }
 
-
+       
         [HttpGet]
-        public IEnumerable<StudentID> Get()
+        public async Task<IEnumerable<StudentID>> Get()
         {
 
-            return _studentRepository.GetAll();
-          
-                      
-
+            return await _studentRepository.GetAll();
         }
 
         [HttpGet("{id}")]
-        public Student Get(int id)
+   
+        public async Task<Student> Get(int id)
         {
-            return _studentRepository.GetById(id);
+            return await _studentRepository.GetById(id);
         }
 
 
         [HttpPost]
-        public IActionResult Post([FromBody] Student student)
+        public async Task<IActionResult> Post([FromBody] Student student)
         {
             if (ModelState.IsValid)
             {
-                _studentRepository.Add(student);
+                 _studentRepository.Add(student);
                 return Ok("Added Successfully");
             }
             return Ok("Wrong Cradentials!");
@@ -48,7 +46,7 @@ namespace WebApplication_Student.Controllers
 
 
         [HttpPut("{id}")]
-        public IActionResult Put(int id,[FromBody]Student student)
+        public async Task<IActionResult> Put(int id,[FromBody]Student student)
         { 
             StudentID sID = new StudentID();
             sID.Id= id;
@@ -66,20 +64,48 @@ namespace WebApplication_Student.Controllers
             
             if(ModelState.IsValid)
             {
-               _studentRepository.Update(sID);
+                 _studentRepository.Update(sID);
                 return Ok("Updated Successfully");
             }
             return Ok(" Not Exist ");
         }
 
         [HttpDelete]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var result = _studentRepository.Delete(id);
+            var result = await _studentRepository.Delete(id);
             return Ok(result);
 
         }
 
+
+
+#region STORED PROCEDURE METHOD
+
+        [HttpPost]
+        [Route("InsertSP")]
+        public async Task<IActionResult> InsertSP([FromBody] Student student)
+        {
+            if (ModelState.IsValid)
+            {
+                await _studentRepository.InsertStoredProcedure(student);
+                return Ok("Added Successfully");
+            }
+            return Ok("Wrong Cradentials!");
+        }
+
+
+        [HttpGet("SP/{id}")]
+        
+
+        public async Task<StudentID> GetByIdStoredProcedure(int id)
+        {
+            return await _studentRepository.GetById_SP(id);
+        }
+
+
+
+        #endregion
 
 
     }
